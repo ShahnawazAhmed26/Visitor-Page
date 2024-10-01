@@ -231,7 +231,7 @@ Widget build(BuildContext context) {
                 title: 'Join us on our website',
                 description: 'Here you can find ways to experience',
                 imageUrl: 'https://i.pinimg.com/736x/12/1d/ca/121dca8c507ea2bc870e345b8d9aeff1.jpg',
-                websiteUrl: 'https://www.google.com', // Add "https://" to the URL
+                websiteUrl: 'https://chalktalk.world/', // Add "https://" to the URL
               ),
             ],
           ),
@@ -585,91 +585,68 @@ class AboutSection extends StatelessWidget {
     required this.websiteUrl,
   }) : super(key: key);
 
-  void _launchURL(String url) async {
-    final Uri _url = Uri.parse(url);
-    if (await canLaunchUrl(_url)) {
-      await launchUrl(_url);
-    } else {
-      print('Could not launch $url'); // Debugging message
-    }
+ void _launchURL(String url) async {
+  final Uri _url = Uri.parse(url);
+  if (await canLaunchUrl(_url)) {
+    await launchUrl(_url);
+  } else {
+    print('Could not launch $url'); // Debugging message
   }
+}
+
 
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Card(
-        elevation: 8,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  Image.network(
-                    imageUrl,
-                    height: 180,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  Container(
-                    height: 40,
-                    color: Colors.black54,
-                    alignment: Alignment.center,
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  description,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                  textAlign: TextAlign.center,
+Widget build(BuildContext context) {
+  return Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Card(
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Stack(
+              alignment: Alignment.bottomCenter,
+              children: [
+                Image.network(
+                  imageUrl,
+                  height: 180,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
                 ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                margin: const EdgeInsets.only(bottom: 16.0),
-                child: ElevatedButton(
-                  onPressed: () => _launchURL(websiteUrl),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                    backgroundColor: Colors.green,
-                  ),
-                  child: const Text(
-                    'Visit Website',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
+                Container(
+                  height: 40,
+                  color: Colors.black54,
+                  alignment: Alignment.center,
+                  child: Text(
+                    title,
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                description,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 16),
               ),
-            ],
-          ),
+            ),
+            ElevatedButton(
+              onPressed: () => _launchURL(websiteUrl),
+              child: const Text('Visit Website'),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
