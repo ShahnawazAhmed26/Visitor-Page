@@ -24,20 +24,28 @@ class ChalkTalkApp extends StatefulWidget {
   State<ChalkTalkApp> createState() => _ChalkTalkAppState();
 }
 
-class _ChalkTalkAppState extends State<ChalkTalkApp> {
+class _ChalkTalkAppState extends State<ChalkTalkApp> with SingleTickerProviderStateMixin {
   final FocusNode _focusNode = FocusNode();
+  late AnimationController _controller; // Declare late
   double _scaleFactor = 1.0;
   late Timer _timer;
-  bool _logoVisible = false; // Start with the logo hidden
+  bool _logoVisible = false;
 
   @override
   void initState() {
     super.initState();
+    
     _focusNode.addListener(() {
       if (_focusNode.hasFocus) {
         _showBottomSheet();
       }
     });
+
+    // Initialize animation controller here
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
 
     // Auto start the fade-in animation after a short delay
     Future.delayed(const Duration(milliseconds: 500), () {
@@ -60,6 +68,7 @@ class _ChalkTalkAppState extends State<ChalkTalkApp> {
   @override
   void dispose() {
     _timer.cancel();
+    _controller.dispose(); // Dispose the controller
     super.dispose();
   }
 
@@ -96,210 +105,204 @@ class _ChalkTalkAppState extends State<ChalkTalkApp> {
     });
   }
 
- @override
-Widget build(BuildContext context) {
-  final screenHeight = MediaQuery.of(context).size.height;
-  final screenWidth = MediaQuery.of(context).size.width;
+  @override
+  Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
-  return Scaffold(
-    appBar: PreferredSize(
-      preferredSize: const Size.fromHeight(250),
-      child: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-  gradient: LinearGradient(
-    colors: [
-      Colors.transparent, // This can remain as is or be adjusted
-      const Color(0xFFD0FFBC), // Updated to use #D0FFBC
-    ],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  ),
-),
-
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AnimatedOpacity(
-                    opacity: _logoVisible ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 500),
-                    child: Container(
-                      width: 120,
-                      height: 120,
-                      child: Image.network(
-                        'https://chalktalk.world/wp-content/uploads/2023/03/logo-chalk-1.png',
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  ColorizeAnimatedTextKit(
-                    text: ['Learning Beyond Borders'],
-                    colors: [
-                      Colors.green.shade200,
-                      Colors.green.shade400,
-                      Colors.green.shade600,
-                      Colors.green.shade800,
-                    ],
-                    textStyle: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    speed: Duration(milliseconds: 200),
-                    repeatForever: true,
-                    onFinished: null,
-                  ),
+    return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(250),
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFF4A90E2),
+                  const Color(0xFF50E3C2),
                 ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 8,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          focusNode: _focusNode,
-                          decoration: InputDecoration(
-                            hintText: 'Talk to Chalk Talk Chat Bot...',
-                            hintStyle: TextStyle(color: Colors.grey[400]),
-                            prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                            border: InputBorder.none,
-                            contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                          ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AnimatedOpacity(
+                      opacity: _logoVisible ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 500),
+                      child: Container(
+                        width: 120,
+                        height: 120,
+                        child: Image.asset(
+                          'assets/logo-chalk-1.png',
+                          fit: BoxFit.contain,
                         ),
                       ),
-                    ],
+                    ),
+                    const SizedBox(width: 8),
+                    ColorizeAnimatedTextKit(
+                      text: ['Learning Beyond Borders'],
+                      colors: [
+                        Colors.orange.shade300,
+                        Colors.blue.shade500,
+                        Colors.lime.shade600,
+                        Colors.purple.shade400,
+                      ],
+                      textStyle: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      speed: Duration(milliseconds: 200),
+                      repeatForever: true,
+                      onFinished: null,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            focusNode: _focusNode,
+                            decoration: InputDecoration(
+                              hintText: 'Talk to Chalk Talk Chat Bot...',
+                              hintStyle: TextStyle(color: Colors.grey[400]),
+                              prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                              border: InputBorder.none,
+                              contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ),
-    body: SingleChildScrollView(
-      child: Stack(
+      body: SingleChildScrollView(
+  child: Stack(
+    children: [
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildMentorsSection(),
-              _buildMentorsList(),
-              const Divider(height: 20, thickness: 2, color: Colors.green),
-              const Center(child: Text('Learning Made Easy')),
-              const Divider(height: 20, thickness: 2, color: Colors.green),
-              _buildSessionsSection(),
-              _buildSessionsCarousel(),
-              const Divider(height: 20, thickness: 2, color: Colors.green),
-              const Center(child: Text('Learn like never before')),
-              const Divider(height: 20, thickness: 2, color: Colors.green),
-              _buildCategoriesSection(),
-              _buildCategoriesCarousel(),
-              const Divider(height: 20, thickness: 2, color: Colors.green),
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.explore, size: 18, color: Colors.green),
-                    SizedBox(width: 8),
-                    Text('Learn About Us'),
-                    SizedBox(width: 8),
-                    Icon(Icons.explore, size: 18, color: Colors.green),
-                  ],
-                ),
-              ),
-              const Divider(height: 20, thickness: 2, color: Colors.green),
-              AboutSection(
-                title: 'Join us on our website',
-                description: 'Here you can find ways to experience',
-                imageUrl: 'https://i.pinimg.com/736x/12/1d/ca/121dca8c507ea2bc870e345b8d9aeff1.jpg',
-                websiteUrl: 'https://chalktalk.world/', // Add "https://" to the URL
-              ),
-            ],
-          ),
-          Positioned(
-            right: 20,
-            bottom: 40,
-            child: ElevatedButton(
-              onPressed: () {
-                // Define login/register action here
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Icon(Icons.login_outlined, size: 22),
-                  SizedBox(width: 10),
-                  Text(
-                    'Login / Register',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 1.1,
-                    ),
-                  ),
-                ],
-              ),
-              style: ButtonStyle(
-                padding: MaterialStateProperty.all(
-                  const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                ),
-                backgroundColor: MaterialStateProperty.all(
-                  const Color(0xff6a9f3e),
-                ),
-                foregroundColor: MaterialStateProperty.all(Colors.white),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                elevation: MaterialStateProperty.all(8),
-                shadowColor: MaterialStateProperty.all(Colors.black45),
-              ),
+          _buildMentorsSection(),
+          _buildMentorsList(),
+          const Divider(height: 20, thickness: 2, color: Colors.green),
+          const Center(child: Text('Learning Made Easy')),
+          const Divider(height: 20, thickness: 2, color: Colors.green),
+          _buildSessionsSection(),
+          _buildSessionsCarousel(),
+          SizedBox(height: 50),
+          const Divider(height: 20, thickness: 2, color: Colors.green),
+          const Center(child: Text('Learn like never before')),
+          const Divider(height: 20, thickness: 2, color: Colors.green),
+          SizedBox(height: 30),
+          _buildCategoriesSection(),
+          _buildCategoriesCarousel(),
+          const Divider(height: 20, thickness: 2, color: Colors.green),
+          const Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Icon(Icons.explore, size: 18, color: Colors.green),
+                SizedBox(width: 8),
+                Text('Learn About Us'),
+                SizedBox(width: 8),
+                Icon(Icons.explore, size: 18, color: Colors.green),
+              ],
             ),
+          ),
+          const Divider(height: 20, thickness: 2, color: Colors.green),
+          const AboutSection(
+            title: 'Join us on our website',
+            description: 'Here you can find ways to experience',
+            imageUrl: 'https://i.pinimg.com/736x/12/1d/ca/121dca8c507ea2bc870e345b8d9aeff1.jpg',
+            websiteUrl: 'https://chalktalk.world/',
           ),
         ],
       ),
+    ],
+  ),
+),
+floatingActionButton: Container(
+  margin: const EdgeInsets.only(bottom: 80), // Adjust this value to move the button up
+  child: ScaleTransition(
+    scale: Tween<double>(begin: 1.0, end: 1.2).animate(CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    )),
+    child: FloatingActionButton.extended(
+      onPressed: () {
+        // Define login/register action here
+        print('Login/Register button pressed');
+        _controller.forward().then((_) {
+          _controller.reverse();
+        });
+      },
+      backgroundColor: const Color(0xff6a9f3e),
+      elevation: 8,
+      icon: const Icon(Icons.login_outlined, size: 22),
+      label: const Text(
+        'Login / Register',
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 1.1,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  ),
+),
+    );
+  }
+}
+
+
+Widget _buildSectionTitle(String title, {required VoidCallback onViewAllPressed}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        TextButton(
+          onPressed: onViewAllPressed,
+          child: const Text('View All', style: TextStyle(color: Colors.green)),
+        ),
+      ],
     ),
   );
 }
 
-
-  Widget _buildSectionTitle(String title, {required VoidCallback onViewAllPressed}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          TextButton(
-            onPressed: onViewAllPressed,
-            child: const Text('View All >'),
-          ),
-        ],
-      ),
-    );
-  }
+// Define remaining methods such as _buildMentorsSection, _buildMentorsList, etc. here.
 
   Widget _buildMentorsList() {
     return Container(
@@ -445,7 +448,7 @@ Widget _buildSessionsCarousel() {
         );
       },
       options: CarouselOptions(
-        height: 520,
+        height: 540,
         enlargeCenterPage: true,
         autoPlay: true,
         aspectRatio: 2.0,
@@ -568,7 +571,6 @@ Widget _buildCategoriesCarousel() {
     ];
     return mentorNames[index % mentorNames.length];
   }
-}
 
 
 class AboutSection extends StatelessWidget {
@@ -639,8 +641,9 @@ Widget build(BuildContext context) {
               ),
             ),
             ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
               onPressed: () => _launchURL(websiteUrl),
-              child: const Text('Visit Website'),
+              child: const Text('Visit Website' , style: TextStyle(color: Colors.white),),
             ),
           ],
         ),
